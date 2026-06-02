@@ -123,7 +123,10 @@ Tag& Tag::operator=(const tagEntry tag)
 
 	// Fill the straight forward fields
 	_tag = tag.name;
-	_file = tag.file;
+	// Conversion from UTF8 to wstring
+	const int size_needed = MultiByteToWideChar(CP_UTF8, 0, tag.file, strlen(tag.file), NULL, 0);
+	_file.assign(size_needed, L'\0');
+	MultiByteToWideChar(CP_UTF8, 0, tag.file, strlen(tag.file), &_file[0], _file.size());
 	_line = tag.address.lineNumber;
 	if (_line == 0)
 	{
@@ -214,14 +217,14 @@ bool Tag::isType(LPCSTR szType)
 /////////////////////////////////////////////////////////////////////////////
 // Returns the filename without the extension
 
-std::string Tag::getBaseFile()
+std::wstring Tag::getBaseFile()
 {
 	// Split the filename
-	char szSpoolDrive[_MAX_DRIVE];
-	char szSpoolDir[_MAX_DIR];
-	char szSpoolFile[_MAX_FNAME];
-	char szSpoolExt[_MAX_EXT];
-	_splitpath_s(_file.c_str(), szSpoolDrive, szSpoolDir, szSpoolFile, szSpoolExt);
+	wchar_t szSpoolDrive[_MAX_DRIVE];
+	wchar_t szSpoolDir[_MAX_DIR];
+	wchar_t szSpoolFile[_MAX_FNAME];
+	wchar_t szSpoolExt[_MAX_EXT];
+	_wsplitpath_s(_file.c_str(), szSpoolDrive, szSpoolDir, szSpoolFile, szSpoolExt);
 
 	return szSpoolFile;
 }
@@ -229,17 +232,17 @@ std::string Tag::getBaseFile()
 /////////////////////////////////////////////////////////////////////////////
 // Returns the full filename without the extension
 
-std::string Tag::getFullBaseFile()
+std::wstring Tag::getFullBaseFile()
 {
 	// Split the filename
-	char szDrive[_MAX_DRIVE];
-	char szDir[_MAX_DIR];
-	char szFile[_MAX_FNAME];
-	char szExt[_MAX_EXT];
-	_splitpath_s(_file.c_str(), szDrive, szDir, szFile, szExt);
+	wchar_t szDrive[_MAX_DRIVE];
+	wchar_t szDir[_MAX_DIR];
+	wchar_t szFile[_MAX_FNAME];
+	wchar_t szExt[_MAX_EXT];
+	_wsplitpath_s(_file.c_str(), szDrive, szDir, szFile, szExt);
 
 	// Reconstruct the base filename
-	std::string ret = szDrive;
+	std::wstring ret = szDrive;
 	ret += szDir;
 	ret += szFile;
 	return ret;
@@ -340,7 +343,7 @@ void Tag::SetFromDB(SqliteStatement* stmt)
 	// Fill the members from the active Sqlite statement
 	_idx = stmt->GetIntColumn("Idx");
 	_tag = stmt->GetTextColumn("Tag");
-	_file = stmt->GetTextColumn("File");
+	_file = stmt->GetWTextColumn("File");
 	_line = stmt->GetIntColumn("Line");
 	_pattern = stmt->GetTextColumn("Pattern");
 	_type = stmt->GetTextColumn("Type");
