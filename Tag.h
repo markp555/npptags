@@ -44,6 +44,7 @@ public:
 	std::string getTag()			{ return _tag; };
 	std::string getFullTag()		{ return _tag + _signature; };
 	std::wstring getFile()			{ return _file; };
+	std::string getFileUTF8();
 	int getLine()					{ return _line; };
 	std::string getPattern()		{ return _pattern; }
 	std::string getType()			{ return _type; };

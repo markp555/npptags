@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
 //  NppTags - CTags plugin for Notepad++                                   //
-//  Copyright (C) 2013 Frank Fesevur                                       //
+//  Copyright (C) 2013 Frank Fesevur and Mark_Pr                           //
 //                                                                         //
 //  This program is free software; you can redistribute it and/or modify   //
 //  it under the terms of the GNU General Public License as published by   //
@@ -302,6 +302,13 @@ std::string Tag::getDetails()
 	}
 
 	return ret;
+}
+
+std::string Tag::getFileUTF8()
+{
+	CHAR buf[MAX_PATH];
+	WideCharToMultiByte(CP_UTF8, 0, _file.c_str(), -1, buf, MAX_PATH, NULL, NULL);
+	return buf;
 }
 
 /////////////////////////////////////////////////////////////////////////////
