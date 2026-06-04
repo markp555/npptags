@@ -119,6 +119,10 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification* notifyCode)
 {
 	switch (notifyCode->nmhdr.code)
 	{
+		case SCN_UPDATEUI:
+		{
+			break;
+		}
 		case NPPN_READY:
 		{
 			// Initialize the options
@@ -170,9 +174,20 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification* notifyCode)
 
 extern "C" __declspec(dllexport) LRESULT messageProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	UNREFERENCED_PARAMETER(uMsg);
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
+
+	switch (uMsg)
+	{
+	case WM_LBUTTONUP:
+		if (GetKeyState(VK_CONTROL) & 0x8000) {
+			// Ctrl is currently pressed
+			if (g_Options->GetCtrlJumpEnabled()) {
+				JumpToTag();
+			}
+		}
+		break;
+	}
 
 /*
 	if (uMsg == WM_MOVE)

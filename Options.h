@@ -48,6 +48,7 @@ public:
 	bool GetDeleteTagsFile()			{ return _deleteTagsFile; };
 	bool GetOverwriteExistingTagsFile()	{ return _overwriteExistingTagsFile; };
 	bool GetCtagsVerbose()				{ return _ctagsVerbose; };
+	bool GetCtrlJumpEnabled()           { return GetBool(L"NppTags", L"jump-on-ctrl", true); }
 
 	void Read();
 	void Write();
