@@ -72,6 +72,7 @@ static BOOL OnOK(HWND hDlg)
 	g_Options->SetMaxDepth(GetDlgItemInt(hDlg, IDC_DEPTH, NULL, FALSE));
 	g_Options->SetJumpBackStack(GetDlgItemInt(hDlg, IDC_JUMP_BACK, NULL, FALSE));
 	g_Options->SetCtagsPath(GetDlgText(hDlg, IDC_CTAGS_PATH));
+	g_Options->Write();
 
 	// We're done
 	CleanItems(hDlg);

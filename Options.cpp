@@ -69,6 +69,7 @@ void Options::Write()
 	WriteInt(s_szOptions, s_szJumpBackStack, _jumpBackStack);
 	WriteString(s_szOptions, s_szCtagsPath, _ctagsPath.c_str());
 	WriteString(s_szOptions, s_szVersion, VERSION_NUMBER_WSTR);
+	WriteBool(s_szOptions, L"highlight", _highlighting);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -81,6 +82,7 @@ void Options::Read()
 	_jumpBackStack = GetInt(s_szOptions, s_szJumpBackStack, 4);
 	_prevVersion = GetString(s_szOptions, s_szVersion, L"");
 	_ctagsPath = GetString(s_szOptions, s_szCtagsPath, L"");
+	_highlighting = GetBool(s_szOptions, L"highlight", true);
 
 	// Read Only Debug options
 	_overwriteExistingTagsFile = GetBool(s_szDebug, s_szOverwriteTags, true);

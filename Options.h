@@ -38,11 +38,13 @@ public:
 	int  GetJumpBackStack()				{ return _jumpBackStack; };
 	std::wstring GetPrevVersion() 		{ return _prevVersion; };
 	std::wstring GetCtagsPath() 		{ return _ctagsPath; };
+	bool GetHighlighting()              { return _highlighting; }
 
 	void SetShowTreeDlg(bool b)			{ _showTreeDlg = b; };
 	void SetMaxDepth(int i)				{ _maxDepth = i; };
 	void SetJumpBackStack(int i)		{ _jumpBackStack = i; };
 	void SetCtagsPath(WCHAR* s) 		{ _ctagsPath = s; };
+	void SetHighlighting(bool b)        { _highlighting = b; }
 
 	// Debug options
 	bool GetDeleteTagsFile()			{ return _deleteTagsFile; };
@@ -60,6 +62,7 @@ private:
 	int _jumpBackStack;
 	std::wstring _ctagsPath;
 	std::wstring _prevVersion;
+	bool _highlighting;
 
 	// Debug options
 	bool _deleteTagsFile;

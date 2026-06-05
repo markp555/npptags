@@ -28,6 +28,7 @@
 #include "Tag.h"
 #include "DlgTree.h"
 #include "WaitCursor.h"
+#include "Highlighting.h"
 using namespace std;
 
 /////////////////////////////////////////////////////////////////////////////

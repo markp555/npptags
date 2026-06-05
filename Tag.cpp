@@ -24,22 +24,6 @@
 
 #include "Tag.h"
 
-// Since these numbers are stored in the database,
-// be careful when changing them
-enum MemberOf {
-	NOT_MEMBER_OF = 0,
-	MEMBER_OF_CLASS = 1,
-	MEMBER_OF_STRUCT = 2,
-	MEMBER_OF_UNION = 3,
-	MEMBER_OF_ENUM = 4,
-	MEMBER_OF_INTERFACE = 5,
-	MEMBER_OF_NAMESPACE = 6,
-	MEMBER_OF_CHAPTER = 7,
-	MEMBER_OF_SECTION = 8,
-	MEMBER_OF_SUBSECTION = 9,
-	MEMBER_OF_TABLE = 10
-};
-
 /////////////////////////////////////////////////////////////////////////////
 //
 

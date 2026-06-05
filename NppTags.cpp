@@ -26,6 +26,7 @@
 #include <stdarg.h>
 #include <string>
 #include <vector>
+#include <time.h>
 using namespace std;
 
 #include "NPP/PluginInterface.h"
@@ -38,6 +39,7 @@ using namespace std;
 #include "Options.h"
 #include "Tag.h"
 #include "WaitCursor.h"
+#include "Highlighting.h"
 
 #ifdef _MSC_VER
 #pragma comment(lib, "comctl32.lib")
@@ -121,6 +123,15 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification* notifyCode)
 	{
 		case SCN_UPDATEUI:
 		{
+			if (notifyCode->updated & (SC_UPDATE_CONTENT | SC_UPDATE_V_SCROLL)) {
+				static int lupd = 0;
+				constexpr int timeout = CLOCKS_PER_SEC / 10;
+				if (lupd + timeout < clock() && g_Options->GetHighlighting())
+				{
+					applyHighlighting();
+					lupd = clock();
+				}
+			}
 			break;
 		}
 		case NPPN_READY:
@@ -133,6 +144,12 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification* notifyCode)
 				g_DB->UpdateFilename();
 				TagsTree();
 			}
+
+			if (g_Options->GetHighlighting())
+			{
+				initHighlighting();
+			}
+
 			break;
 		}
 
@@ -582,6 +599,8 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD reasonForCall, LPVOID lpReserved)
 			DestroyIcon(s_iconRefreshTagsDark);
 			DestroyIcon(s_iconJumpBack);
 			DestroyIcon(s_iconJumpBackDark);
+
+			resetHighlighting();
 
 			// Clean up the options
 			delete g_Options;
