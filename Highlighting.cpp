@@ -11,6 +11,7 @@ enum SymbolType {
 	SYM_FUNCTION,
 	SYM_CLASS,
 	SYM_VARIABLE,
+	SYM_ENVIRONMENT,
 	SYM_COUNT,
 	SYM_NONE = -1
 };
@@ -51,7 +52,7 @@ SymbolType getSymbolType(std::string s)
 			st = SymbolType::SYM_VARIABLE;
 	}
 	stmt->Reset();
-	stmt_mutex.clear();
+	stmt_mutex.clear(std::memory_order_release);
 	return st;
 }
 
@@ -79,7 +80,7 @@ void subinit()
 	catch (...)
 	{
 		stmt = nullptr;
-		stmt_mutex.clear();
+		stmt_mutex.clear(std::memory_order_release);
 	}
 }
 
@@ -89,7 +90,7 @@ void subreset()
 	delete stmt;
 	stmt = NULL;
 	g_DB->Close();
-	stmt_mutex.clear();
+	stmt_mutex.clear(std::memory_order_release);
 }
 
 void resetHighlighting()
@@ -105,9 +106,10 @@ void initIndicators() {
 
 	// Цвета (COLORREF имеет формат BGR)
 	COLORREF colors[SYM_COUNT] = {
-		RGB(160, 82, 45),   // Function - Синий
-		RGB(154, 205, 50),    // Class/Struct/Union - Зеленый
-		RGB(112, 128, 144)    // Variable - Оранжевый
+		RGB(116, 83, 31),   // Function - Синий
+		RGB(43, 145, 175),    // Class/Struct/Union - Зеленый
+		RGB(112, 128, 144),    // Variable - Оранжевый
+		RGB(143, 8, 196)        // Defines - Коричневый
 	};
 
 	// Инициализируем стили для обеих панелей Scintilla (основной и вторичной)

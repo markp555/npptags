@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
 //  NppTags - CTags plugin for Notepad++                                   //
-//  Copyright (C) 2013 Frank Fesevur                                       //
+//  Copyright (C) 2013 Frank Fesevur and markp555                          //
 //                                                                         //
 //  This program is free software; you can redistribute it and/or modify   //
 //  it under the terms of the GNU General Public License as published by   //
