@@ -29,6 +29,7 @@ static int g_indicator_start = -1;
 
 std::atomic_flag stmt_mutex = ATOMIC_FLAG_INIT;
 SqliteStatement* stmt = nullptr;
+SqliteStatement* stmt_env = nullptr;
 
 SymbolType getSymbolType(std::string s)
 {

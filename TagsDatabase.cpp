@@ -179,7 +179,14 @@ void TagsDatabase::Init()
 	Execute("CREATE INDEX TagsLangType ON Tags(Language, Type);");
 	Execute("CREATE INDEX TagsType ON Tags(Type);");
 	Execute("CREATE INDEX TagsLangMember ON Tags(Language, MemberOf);");
+	Execute("CREATE INDEX TagsFile ON Tags(File);");
 	Execute("CREATE TABLE Settings(Key TEXT PRIMARY KEY, Value TEXT);");
+	Execute("CREATE TABLE Environment(Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Name TEXT NOT NULL, Value TEXT, Evaluated INTEGER NOT NULL);");
+	Execute("CREATE INDEX EnvironmentName ON Environment(Name);");
+	Execute("CREATE TABLE References(Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, File TEXT NOT NULL);");
+	Execute("CREATE INDEX ReferenceFile ON References(File);");
+	Execute("CREATE TABLE IncludeDirectories(Id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Directory TEXT NOT NULL);");
+	Execute("CREATE INDEX IncludeDir ON IncludeDirectories(Directory);");
 	CommitTransaction();
 	SetUserVersion(_dbVersion);
 }
