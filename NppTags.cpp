@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
 //  NppTags - CTags plugin for Notepad++                                   //
-//  Copyright (C) 2013 Frank Fesevur                                       //
+//  Copyright (C) 2013 Frank Fesevur and markp555                          //
 //                                                                         //
 //  This program is free software; you can redistribute it and/or modify   //
 //  it under the terms of the GNU General Public License as published by   //
@@ -26,6 +26,7 @@
 #include <stdarg.h>
 #include <string>
 #include <vector>
+#include <time.h>
 using namespace std;
 
 #include "NPP/PluginInterface.h"
@@ -38,6 +39,7 @@ using namespace std;
 #include "Options.h"
 #include "Tag.h"
 #include "WaitCursor.h"
+#include "Highlighting.h"
 
 #ifdef _MSC_VER
 #pragma comment(lib, "comctl32.lib")
@@ -119,6 +121,19 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification* notifyCode)
 {
 	switch (notifyCode->nmhdr.code)
 	{
+		case SCN_UPDATEUI:
+		{
+			if (notifyCode->updated & (SC_UPDATE_CONTENT | SC_UPDATE_V_SCROLL)) {
+				static int lupd = 0;
+				constexpr int timeout = CLOCKS_PER_SEC / 10;
+				if (lupd + timeout < clock() && g_Options->GetHighlighting())
+				{
+					applyHighlighting();
+					lupd = clock();
+				}
+			}
+			break;
+		}
 		case NPPN_READY:
 		{
 			// Initialize the options
@@ -129,6 +144,12 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification* notifyCode)
 				g_DB->UpdateFilename();
 				TagsTree();
 			}
+
+			if (g_Options->GetHighlighting())
+			{
+				initHighlighting();
+			}
+
 			break;
 		}
 
@@ -170,9 +191,20 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification* notifyCode)
 
 extern "C" __declspec(dllexport) LRESULT messageProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	UNREFERENCED_PARAMETER(uMsg);
 	UNREFERENCED_PARAMETER(wParam);
 	UNREFERENCED_PARAMETER(lParam);
+
+	switch (uMsg)
+	{
+	case WM_LBUTTONUP:
+		if (GetKeyState(VK_CONTROL) & 0x8000) {
+			// Ctrl is currently pressed
+			if (g_Options->GetCtrlJumpEnabled()) {
+				JumpToTag();
+			}
+		}
+		break;
+	}
 
 /*
 	if (uMsg == WM_MOVE)
@@ -302,13 +334,11 @@ static void StoreCurrentPosition()
 	SendMessage(g_nppData._nppHandle, NPPM_GETFULLCURRENTPATH, MAX_PATH, (LPARAM) &wcurFile);
 	if (wcslen(wcurFile) == 0)
 		return;
-	CHAR curFile[MAX_PATH];
-	Unicode2Ansi(curFile, wcurFile, MAX_PATH);
 
 	// Store the information
 	Tag tag;
 	tag.setLine(line + 1);		// Line number from Scintilla is 0-based
-	tag.setFile(curFile);
+	tag.setFile(wcurFile);
 	s_JumpBackStack.push_back(tag);
 
 	// Don't let the stack get too big
@@ -326,8 +356,7 @@ void JumpToTag(Tag* pTag, bool storeCurPos)
 		StoreCurrentPosition();
 
 	// Open the file
-	string str = pTag->getFile();
-	wstring wstr(str.begin(), str.end());
+	wstring wstr = pTag->getFile();
 	SendMessage(g_nppData._nppHandle, NPPM_DOOPEN, 0, (LPARAM) wstr.c_str());
 
 	// Go to the right location
@@ -570,6 +599,8 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD reasonForCall, LPVOID lpReserved)
 			DestroyIcon(s_iconRefreshTagsDark);
 			DestroyIcon(s_iconJumpBack);
 			DestroyIcon(s_iconJumpBackDark);
+
+			resetHighlighting();
 
 			// Clean up the options
 			delete g_Options;

@@ -46,7 +46,7 @@ function create_version_git_h()
 	echo "#define VERSION_NUMBER $VERSION_NUMBERS" >> version_git.h
 	echo "#define VERSION_NUMBER_STR \"$VERSION\"" >> version_git.h
 	echo "#define VERSION_NUMBER_WSTR L\"$VERSION\"" >> version_git.h
-	echo "#define COPYRIGHT_STR \"Copyright (c) 2013-$YEAR by Frank Fesevur\"" >> version_git.h
+	echo "#define COPYRIGHT_STR \"Copyright (c) 2013-$YEAR by markp555 and Frank Fesevur\"" >> version_git.h
 
 	echo "#define VERSION_GIT_STR \"$GIT_VERSION\"" >> version_git.h
 	echo "#define VERSION_GIT_WSTR L\"$GIT_VERSION\"" >> version_git.h
